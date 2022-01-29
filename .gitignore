@@ -1,10 +1,7 @@
 
 *.png
-trainx-1643195143
-trainy-1643195143
-valx-1643195143
-valy-1643195143
-trainx-1643204824
-trainy-1643204824
-valx-1643204824
-valy-1643204824
+trainx*
+trainy*
+valx*
+valy*
+models/
