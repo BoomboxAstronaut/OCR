@@ -1,0 +1,80 @@
+3x3 light
+
+x = layers.Conv2D(16, 2, padding='same', activation='relu')(x)
+x = layers.Conv2D(16, 2, padding='same', activation='relu')(x)
+x = layers.Conv2D(16, 2, padding='same', activation='relu')(x)
+x = layers.MaxPooling2D(pool_size=(2, 2))(x)
+x = layers.Conv2D(32, 2, padding='same', activation='relu')(x)
+x = layers.Conv2D(32, 2, padding='same', activation='relu')(x)
+x = layers.Conv2D(32, 2, padding='same', activation='relu')(x)
+x = layers.MaxPooling2D(pool_size=(2, 2))(x)
+x = layers.Conv2D(64, 2, padding='same', activation='relu')(x)
+x = layers.Conv2D(64, 2, padding='same', activation='relu')(x)
+x = layers.Conv2D(64, 2, padding='same', activation='relu')(x)
+x = layers.MaxPooling2D(pool_size=(2, 2))(x)
+
+x = layers.Flatten()(x)
+x = layers.Dense(256, activation='relu')(x)
+x = layers.Dense(256, activation='relu')(x)
+x = layers.Dense(128, activation='relu')(x)
+
+
+3x2 tapered 
+
+x = layers.Rescaling(1.0/255)(inlay)
+x = layers.Conv2D(16, kstep, padding='same', activation='relu')(x)
+x = layers.Conv2D(32, kstep, padding='same', activation='relu')(x)
+x = layers.Conv2D(64, kstep, padding='same', activation='relu')(x)
+x = layers.MaxPooling2D(pool_size=(2, 2))(x)
+x = layers.Conv2D(128, kstep, padding='same', activation='relu')(x)
+x = layers.Conv2D(128, kstep, padding='same', activation='relu')(x)
+x = layers.Conv2D(128, kstep, padding='same', activation='relu')(x)
+x = layers.MaxPooling2D(pool_size=(2, 2))(x)
+
+x = layers.Flatten()(x)
+x = layers.Dense(512, activation='relu')(x)
+x = layers.Dense(512, activation='relu')(x)
+outlay = layers.Dense(49, activation='softmax')(x)
+
+
+2x4 ultrawide 	85%
+
+x = layers.Rescaling(1.0/255)(inlay)
+x = layers.Conv2D(16, kstep, padding='same', activation='relu')(x)
+x = layers.Conv2D(16, kstep, padding='same', activation='relu')(x)
+x = layers.Conv2D(16, kstep, padding='same', activation='relu')(x)
+x = layers.Conv2D(16, kstep, padding='same', activation='relu')(x)
+x = layers.MaxPooling2D(pool_size=(2, 2))(x)
+x = layers.Conv2D(32, kstep, padding='same', activation='relu')(x)
+x = layers.Conv2D(32, kstep, padding='same', activation='relu')(x)
+x = layers.Conv2D(32, kstep, padding='same', activation='relu')(x)
+x = layers.Conv2D(32, kstep, padding='same', activation='relu')(x)
+x = layers.MaxPooling2D(pool_size=(2, 2))(x)
+
+x = layers.Flatten()(x)
+x = layers.Dense(512, activation='relu')(x)
+x = layers.Dense(512, activation='relu')(x)
+outlay = layers.Dense(49, activation='softmax')(x)
+
+
+
+
+
+2x4 ultrawideplus 	85%
+
+x = layers.Rescaling(1.0/255)(inlay)
+x = layers.Conv2D(32, kstep, padding='same', activation='relu')(x)
+x = layers.Conv2D(32, kstep, padding='same', activation='relu')(x)
+x = layers.Conv2D(32, kstep, padding='same', activation='relu')(x)
+x = layers.Conv2D(32, kstep, padding='same', activation='relu')(x)
+x = layers.MaxPooling2D(pool_size=(2, 2))(x)
+x = layers.Conv2D(64, kstep, padding='same', activation='relu')(x)
+x = layers.Conv2D(64, kstep, padding='same', activation='relu')(x)
+x = layers.Conv2D(64, kstep, padding='same', activation='relu')(x)
+x = layers.Conv2D(64, kstep, padding='same', activation='relu')(x)
+x = layers.MaxPooling2D(pool_size=(2, 2))(x)
+
+x = layers.Flatten()(x)
+x = layers.Dense(512, activation='relu')(x)
+x = layers.Dense(512, activation='relu')(x)
+outlay = layers.Dense(49, activation='softmax')(x)
