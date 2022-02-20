@@ -1,0 +1,1094 @@
+SERIES	0
+Base	test0
+inp = keras.Input(shape=(64, 16, 1))
+x = layers.Rescaling(1.0/255)(inp)
+x = layers.Conv2D(32, 3, padding='same', activation='relu')(x)
+x = layers.Conv2D(64, 3, padding='same', activation='relu')(x)
+for features in [64, 128, 256]:
+    res_last = x
+    x = layers.Conv2D(features, 1, activation='relu')(x)
+    x = layers.Conv2D(features, 3, padding='same', activation='relu')(x)
+    x = layers.Conv2D(features, 3, padding='same', activation='relu')(x)
+    x = layers.MaxPooling2D(pool_size=(2, 2))(x)
+    x = layers.Dropout(0.1)(x)
+    res = layers.Conv2D(features, 1, strides=2, padding="same")(res_last)
+    x = layers.add([x, res])
+x = layers.Conv2D(256, 3, padding='same')(x)
+x = layers.BatchNormalization(axis=3)(x)
+x = layers.Activation("relu")(x)
+x = layers.GlobalAveragePooling2D()(x)
+x = layers.Dropout(0.3678)(x)
+outp = layers.Dense(1, activation='sigmoid')(x)
+
+Score: 0.9165825927699802
+Best VAccuracy: 0.964111328125
+Best VLoss: 0.10346506536006927
+Last 7 Avg VAccuracy: 0.9402901785714286
+Last 7 Avg VLoss: 0.15148967610938208
+Training time: 93.16467654705048
+Samples per second: 2820.0451974691023
+
+
+test1	change entry block
+x = layers.Conv2D(32, 3, padding='same', activation='relu')(x)
+Score: 0.9128587873810234
+Best VAccuracy: 0.9619140625
+Best VLoss: 0.11774901673197746
+Last 7 Avg VAccuracy: 0.9414760044642857
+Last 7 Avg VLoss: 0.15214438949312484
+Training time: 80.07456278800964
+Samples per second: 3274.373785939263
+
+
+test2 change entry block
+x = layers.Conv2D(32, 5, padding='same', activation='relu')(x)
+Score: 0.8924262467385193
+Best VAccuracy: 0.95166015625
+Best VLoss: 0.14227993041276932
+Last 7 Avg VAccuracy: 0.9234444754464286
+Last 7 Avg VLoss: 0.19012397634131567
+Training time: 79.76274049282074
+Samples per second: 3287.0652817141095
+
+
+test3	change entry block
+x = layers.Conv2D(64, 3, padding='same', activation='relu')(x)
+Score: 0.917124099445068
+Best VAccuracy: 0.964111328125
+Best VLoss: 0.10433853417634964
+Last 7 Avg VAccuracy: 0.94140625
+Last 7 Avg VLoss: 0.1488811932504177
+Training time: 82.62479317188263
+Samples per second: 3172.752905380781
+
+
+test4 change entry block
+x = layers.Conv2D(32, 3, padding='same', activation='relu')(x)
+x = layers.BatchNormalization(axis=3)(x)
+Score: 0.9309781018987112
+Best VAccuracy: 0.972412109375
+Best VLoss: 0.0844186320900917
+Last 7 Avg VAccuracy: 0.952880859375
+Last 7 Avg VLoss: 0.12870363358940398
+Training time: 82.8737404346466
+Samples per second: 3163.4188270707564
+
+test5 same as test4
+Score: 0.9275644386044619
+Best VAccuracy: 0.968994140625
+Best VLoss: 0.10115168988704681
+Last 7 Avg VAccuracy: 0.9550432477678572
+Last 7 Avg VLoss: 0.1251960982169424
+Training time: 82.38173413276672
+Samples per second: 3191.5267935558354
+
+
+
+
+Baseline Entry Block
+x = layers.Rescaling(1.0/255)(inp)
+x = layers.Conv2D(32, 3, padding='same', activation='relu')(x)
+x = layers.BatchNormalization(axis=3)(x)
+
+
+test0/1	Baseline
+Score: 0.9274176568629777
+Best VAccuracy: 0.9697265625
+Best VLoss: 0.09119390323758125
+Last 7 Avg VAccuracy: 0.9500209263392857
+Last 7 Avg VLoss: 0.13141689343111856
+Training time: 91.59616565704346
+Samples per second: 2863.496158363486
+
+
+
+test2/3	Exit block change
+x = layers.BatchNormalization(axis=3)(x)
+x = layers.Activation("relu")(x)
+x = layers.GlobalAveragePooling2D()(x)
+Score: 0.9209505123083103
+Best VAccuracy: 0.96435546875
+Best VLoss: 0.11214049160480499
+Last 7 Avg VAccuracy: 0.95166015625
+Last 7 Avg VLoss: 0.13513827856097904
+Training time: 84.44494783878326
+Samples per second: 3104.4386713950676
+
+
+
+test4/5	Exit block change
+x = layers.Flatten()(x)
+x = layers.Dense(256, activation='relu')(x)
+x = layers.Dense(256, activation='relu')(x)
+Score: 0.9132265294363978
+Best VAccuracy: 0.961181640625
+Best VLoss: 0.11598445102572441
+Last 7 Avg VAccuracy: 0.9419294084821428
+Last 7 Avg VLoss: 0.15205599953021323
+Training time: 92.22474575042725
+Samples per second: 2842.4927306825107
+
+
+test6/7	Exit block change
+x = layers.Flatten()(x)
+x = layers.Dense(256, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.0001))(x)
+x = layers.Dense(256, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.0001))(x)
+Score: 0.8996782146423592
+Best VAccuracy: 0.96240234375
+Best VLoss: 0.14566627889871597
+Last 7 Avg VAccuracy: 0.9428013392857143
+Last 7 Avg VLoss: 0.18778175754206522
+Training time: 91.55516457557678
+Samples per second: 2863.2754130379744
+
+
+
+test8/9	Exit Block Change
+x = layers.GlobalAveragePooling2D()(x)
+Score: 0.9066475337983151
+Best VAccuracy: 0.95947265625
+Best VLoss: 0.1285615712404251
+Last 7 Avg VAccuracy: 0.9377092633928572
+Last 7 Avg VLoss: 0.16281566981758389
+Training time: 86.35068607330322
+Samples per second: 3035.8275042359405
+
+
+
+test10/11	Exit Block Change
+x = layers.Conv2D(256, 3, padding='same')(x)
+x = layers.BatchNormalization(axis=3)(x)
+x = layers.Activation("relu")(x)
+x = layers.AveragePooling2D(2, 2)(x)
+x = layers.Flatten()(x)
+Score: 0.92315040884367
+Best VAccuracy: 0.9638671875
+Best VLoss: 0.10682206973433495
+Last 7 Avg VAccuracy: 0.9513113839285714
+Last 7 Avg VLoss: 0.12946507281490735
+Training time: 91.3947023153305
+Samples per second: 2871.263455039873
+
+
+test12/13	ExitBlock Change
+x = layers.AveragePooling2D(2, 2)(x)
+x = layers.Flatten()(x)
+x = layers.Dense(256, activation='relu')(x)
+x = layers.Dense(256, activation='relu')(x)
+Score: 0.9182451499704619
+Best VAccuracy: 0.966552734375
+Best VLoss: 0.10646058991551399
+Last 7 Avg VAccuracy: 0.9442661830357142
+Last 7 Avg VLoss: 0.14775429985352925
+Training time: 88.20084083080292
+Samples per second: 2972.459877039656
+
+
+test14/15	Exit Block
+x = layers.Conv2D(256, 3, padding='same')(x)
+x = layers.BatchNormalization(axis=3)(x)
+x = layers.Activation("relu")(x)
+x = layers.AveragePooling2D(2, 2)(x)
+x = layers.Flatten()(x)
+x = layers.Dense(256, activation='relu')(x)
+Score: 0.9280015906782755
+Best VAccuracy: 0.967529296875
+Best VLoss: 0.09600060805678368
+Last 7 Avg VAccuracy: 0.9523577008928572
+Last 7 Avg VLoss: 0.12400387227535248
+Training time: 90.74749672412872
+Samples per second: 2888.8367611848507
+
+test16/17	Exit block
+x = layers.Conv2D(256, 3, padding='same')(x)
+x = layers.BatchNormalization(axis=3)(x)
+x = layers.Activation("relu")(x)
+x = layers.Flatten()(x)
+Score: 0.9232799583681185
+Best VAccuracy: 0.964111328125
+Best VLoss: 0.10215466842055321
+Last 7 Avg VAccuracy: 0.9496023995535714
+Last 7 Avg VLoss: 0.13205667212605476
+Training time: 90.12212610244751
+Samples per second: 2909.186255801239
+
+
+test18/19	Exit Block
+x = layers.Conv2D(256, 3, padding='same')(x)
+x = layers.BatchNormalization(axis=3)(x)
+x = layers.Activation("relu")(x)
+x = layers.GlobalMaxPooling2D()(x)
+Score: 0.9325518790458485
+Best VAccuracy: 0.969970703125
+Best VLoss: 0.08992006629705429
+Last 7 Avg VAccuracy: 0.9576590401785714
+Last 7 Avg VLoss: 0.1183078241135393
+Training time: 98.03989160060883
+Samples per second: 2684.0010537333587
+
+
+text20/21	Exit Block
+x = layers.Conv2D(512, 3, padding='same')(x)
+x = layers.BatchNormalization(axis=3)(x)
+x = layers.Activation("relu")(x)
+x = layers.GlobalAveragePooling2D()(x)
+Score: 0.9205137579843881
+Best VAccuracy: 0.96044921875
+Best VLoss: 0.10976461321115494
+Last 7 Avg VAccuracy: 0.9500906808035714
+Last 7 Avg VLoss: 0.13345118452395713
+Training time: 93.00158452987671
+Samples per second: 2821.257000126819
+
+
+text22/23	Exit Block
+x = layers.Conv2D(128, 3, padding='same')(x)
+x = layers.BatchNormalization(axis=3)(x)
+x = layers.Activation("relu")(x)
+x = layers.GlobalAveragePooling2D()(x)
+Score: 0.9239002509702378
+Best VAccuracy: 0.9677734375
+Best VLoss: 0.10406336188316345
+Last 7 Avg VAccuracy: 0.9500906808035714
+Last 7 Avg VLoss: 0.13222278601356913
+Training time: 93.58483040332794
+Samples per second: 2803.246682736947
+
+
+
+POTENTIAL
+Test24/25	Exit Block
+x = layers.Conv2D(128, 3, padding='same')(x)
+x = layers.BatchNormalization(axis=3)(x)
+x = layers.Activation("relu")(x)
+x = layers.GlobalMaxPooling2D()(x)
+x = layers.Flatten()(x)
+x = layers.Dense(128, activation='relu')(x)
+Score: 0.9323288652799017
+Best VAccuracy: 0.969970703125
+Best VLoss: 0.09024856984615326
+Last 7 Avg VAccuracy: 0.9567522321428572
+Last 7 Avg VLoss: 0.11806813893573626
+Training time: 88.65708613395691
+Samples per second: 2956.9596849438726
+
+
+Test26/27	Retest Base
+Score: 0.9205228516492243
+Best VAccuracy: 0.962890625
+Best VLoss: 0.10902955010533333
+Last 7 Avg VAccuracy: 0.9486955915178572
+Last 7 Avg VLoss: 0.13521069235035352
+Training time: 89.39319968223572
+Samples per second: 2932.5826066749814
+
+
+
+Test28/29	Same as 18/19	GlobalMaxPooling  Exit
+Score: 0.9275215504576424
+Best VAccuracy: 0.965087890625
+Best VLoss: 0.0957234539091587
+Last 7 Avg VAccuracy: 0.9531947544642857
+Last 7 Avg VLoss: 0.12452350876161031
+Training time: 90.09376001358032
+Samples per second: 2909.765960720538
+
+
+
+
+Test30/31	Same as	24/25	128 Conv Exit
+Score: 0.9285198878569545
+Best VAccuracy: 0.971923828125
+Best VLoss: 0.08439267426729202
+Last 7 Avg VAccuracy: 0.9485560825892858
+Last 7 Avg VLoss: 0.13456987589597702
+Training time: 84.85006010532379
+Samples per second: 3089.50759114484
+
+
+
+
+POTENTIAL
+Test32/33	128Conv MaxPool Exit
+x = layers.Conv2D(128, 3, padding='same')(x)
+x = layers.BatchNormalization(axis=3)(x)
+x = layers.Activation("relu")(x)
+x = layers.GlobalMaxPooling2D()(x)
+Score: 0.9365366799275542
+Best VAccuracy: 0.97216796875
+Best VLoss: 0.0814998485147953
+Last 7 Avg VAccuracy: 0.9591238839285714
+Last 7 Avg VLoss: 0.11329064677868571
+Training time: 86.47182035446167
+Samples per second: 3031.556487780024
+
+
+
+test34/35	Exit Block
+x = layers.Conv2D(128, 3, padding='same')(x)
+x = layers.Conv2D(128, 3, padding='same')(x)
+x = layers.BatchNormalization(axis=3)(x)
+x = layers.Activation("relu")(x)
+x = layers.GlobalMaxPooling2D()(x)
+Score: 0.9298163543211261
+Best VAccuracy: 0.969482421875
+Best VLoss: 0.09695518016815186
+Last 7 Avg VAccuracy: 0.9565778459821429
+Last 7 Avg VLoss: 0.12164236605167389
+Training time: 91.42840540409088
+Samples per second: 2867.741171585927
+
+
+
+test36/37
+x = layers.Conv2D(128, 3, padding='same')(x)
+x = layers.BatchNormalization(axis=3)(x)
+x = layers.Activation("relu")(x)
+x = layers.Conv2D(128, 3, padding='same')(x)
+x = layers.BatchNormalization(axis=3)(x)
+x = layers.Activation("relu")(x)
+x = layers.GlobalMaxPooling2D()(x)
+Score: 0.922926941498325
+Best VAccuracy: 0.96728515625
+Best VLoss: 0.10274986177682877
+Last 7 Avg VAccuracy: 0.9488002232142857
+Last 7 Avg VLoss: 0.13583515371595112
+Training time: 88.83082556724548
+Samples per second: 2951.2682113775913
+
+
+
+
+
+SERIES 1
+BASE
+Score: 0.9274176568629777
+Best VAccuracy: 0.9697265625
+Best VLoss: 0.09119390323758125
+Last 7 Avg VAccuracy: 0.9500209263392857
+Last 7 Avg VLoss: 0.13141689343111856
+Training time: 91.59616565704346
+Samples per second: 2863.496158363486
+
+
+test0/1	Entry
+x = layers.Conv2D(32, 3, padding='same', activation='relu')(x)
+x = layers.BatchNormalization(axis=3)(x)
+x = layers.Conv2D(32, 3, padding='same', activation='relu')(x)
+x = layers.BatchNormalization(axis=3)(x)
+Score: 0.9295289604765841
+Best VAccuracy: 0.967529296875
+Best VLoss: 0.08805904164910316
+Last 7 Avg VAccuracy: 0.9530552455357143
+Last 7 Avg VLoss: 0.1260375508240291
+Training time: 97.03466188907623
+Samples per second: 2701.6350334371955
+
+
+test2/3	Entry	
+x = layers.Conv2D(32, 3, padding='same', activation='relu')(x)
+x = layers.BatchNormalization(axis=3)(x)
+x = layers.Conv2D(64, 3, padding='same', activation='relu')(x)
+x = layers.BatchNormalization(axis=3)(x)
+Score: 0.9322292927166913
+Best VAccuracy: 0.974365234375
+Best VLoss: 0.08681833744049072
+Last 7 Avg VAccuracy: 0.9549386160714286
+Last 7 Avg VLoss: 0.12495804365192141
+Training time: 103.4754843711853
+Samples per second: 2533.5759344305116
+
+
+
+test4/5	Entry
+x = layers.Conv2D(64, 3, padding='same', activation='relu')(x)
+x = layers.BatchNormalization(axis=3)(x)
+x = layers.Conv2D(64, 3, padding='same', activation='relu')(x)
+x = layers.BatchNormalization(axis=3)(x)
+Score: 0.9346030620413817
+Best VAccuracy: 0.97265625
+Best VLoss: 0.08668892830610275
+Last 7 Avg VAccuracy: 0.957763671875
+Last 7 Avg VLoss: 0.11552327019827707
+Training time: 100.00129449367523
+Samples per second: 2621.763870215566
+
+
+test6/7	Entry
+x = layers.Conv2D(32, 3, padding='same', activation='relu')(x)
+x = layers.Conv2D(32, 3, padding='same', activation='relu')(x)
+x = layers.BatchNormalization(axis=3)(x)
+Score: 0.9270399922770636
+Best VAccuracy: 0.971435546875
+Best VLoss: 0.08906726539134979
+Last 7 Avg VAccuracy: 0.9494280133928572
+Last 7 Avg VLoss: 0.13690388575196266
+Training time: 88.28664743900299
+Samples per second: 2969.3126286936795
+
+
+
+
+test8/9
+x = layers.Conv2D(16, 3, padding='same', activation='relu')(x)
+x = layers.BatchNormalization(axis=3)(x)
+x = layers.Conv2D(32, 3, padding='same', activation='relu')(x)
+x = layers.BatchNormalization(axis=3)(x)
+Score: 0.9246765881747605
+Best VAccuracy: 0.968994140625
+Best VLoss: 0.09864406660199165
+Last 7 Avg VAccuracy: 0.9496372767857143
+Last 7 Avg VLoss: 0.1349869854748249
+Training time: 89.07661724090576
+Samples per second: 2943.019231862814
+
+
+
+
+test10/11	Entry
+x = layers.Conv2D(32, 3, padding='same', activation='relu')(x)
+x = layers.BatchNormalization(axis=3)(x)
+x = layers.Conv2D(64, 3, padding='same', activation='relu')(x)
+x = layers.BatchNormalization(axis=3)(x)
+x = layers.Conv2D(128, 3, padding='same', activation='relu')(x)
+x = layers.BatchNormalization(axis=3)(x)
+Score: 0.9310547052952075
+Best VAccuracy: 0.97265625
+Best VLoss: 0.08891921117901802
+Last 7 Avg VAccuracy: 0.9544154575892857
+Last 7 Avg VLoss: 0.12551907024213246
+Training time: 117.18384063243866
+Samples per second: 2237.095481744049
+
+
+
+test12/13	Entry
+x = layers.Conv2D(16, 3, padding='same', activation='relu')(x)
+x = layers.BatchNormalization(axis=3)(x)
+Score: 0.9258452562356516
+Best VAccuracy: 0.96484375
+Best VLoss: 0.103438600897789
+Last 7 Avg VAccuracy: 0.9543805803571428
+Last 7 Avg VLoss: 0.1252185952450548
+Training time: 82.60115694999695
+Samples per second: 3173.824898302619
+
+
+
+test14/15	Entry
+x = layers.Conv2D(8, 3, padding='same', activation='relu')(x)
+x = layers.BatchNormalization(axis=3)(x)
+x = layers.Conv2D(16, 3, padding='same', activation='relu')(x)
+x = layers.BatchNormalization(axis=3)(x)
+x = layers.Conv2D(32, 3, padding='same', activation='relu')(x)
+x = layers.BatchNormalization(axis=3)(x)
+x = layers.Conv2D(64, 3, padding='same', activation='relu')(x)
+x = layers.BatchNormalization(axis=3)(x)
+Score: 0.9089633740058846
+Best VAccuracy: 0.96435546875
+Best VLoss: 0.11111684888601303
+Last 7 Avg VAccuracy: 0.9331403459821428
+Last 7 Avg VLoss: 0.17116911496434895
+Training time: 104.74740779399872
+Samples per second: 2502.6358043386485
+
+
+
+
+test16/17	Entry
+x = layers.Conv2D(64, 3, padding='same', activation='relu')(x)
+x = layers.BatchNormalization(axis=3)(x)
+Score: 0.9255232141029182
+Best VAccuracy: 0.9677734375
+Best VLoss: 0.10151297226548195
+Last 7 Avg VAccuracy: 0.9527064732142857
+Last 7 Avg VLoss: 0.13012511070285526
+Training time: 78.2355443239212
+Samples per second: 3350.859559039799
+
+
+test18/19	Entry
+x = layers.Conv2D(128, 3, padding='same', activation='relu')(x)
+x = layers.BatchNormalization(axis=3)(x)
+Score: 0.9284855206764975
+Best VAccuracy: 0.971923828125
+Best VLoss: 0.09293683245778084
+Last 7 Avg VAccuracy: 0.9528111049107143
+Last 7 Avg VLoss: 0.13042311423591205
+Training time: 98.33069264888763
+Samples per second: 2666.058399968645
+
+
+
+test20/21	Entry
+x = layers.Conv2D(64, 3, padding='same', activation='relu')(x)
+x = layers.BatchNormalization(axis=3)(x)
+x = layers.Conv2D(64, 3, padding='same', activation='relu')(x)
+x = layers.BatchNormalization(axis=3)(x)
+x = layers.Conv2D(64, 3, padding='same', activation='relu')(x)
+x = layers.BatchNormalization(axis=3)(x)
+Score: 0.9179035923303762
+Best VAccuracy: 0.959228515625
+Best VLoss: 0.10970399528741837
+Last 7 Avg VAccuracy: 0.9457659040178572
+Last 7 Avg VLoss: 0.13891002535820007
+Training time: 113.00533962249756
+Samples per second: 2319.7726476526323
+
+
+
+test22/23	Base retest
+Score: 0.9240165185780804
+Best VAccuracy: 0.964111328125
+Best VLoss: 0.10178753361105919
+Last 7 Avg VAccuracy: 0.9515206473214286
+Last 7 Avg VLoss: 0.1311923121767385
+Training time: 85.84698736667633
+Samples per second: 3054.709777972462
+
+
+
+test24/25	32-64 retest
+Score: 0.9244524749411589
+Best VAccuracy: 0.966552734375
+Best VLoss: 0.099999088793993
+Last 7 Avg VAccuracy: 0.9506487165178572
+Last 7 Avg VLoss: 0.13286417882357326
+Training time: 90.00242245197296
+Samples per second: 2916.7909082664264
+
+
+
+test26/27	64-64 retest
+Score: 0.9315867345076658
+Best VAccuracy: 0.974365234375
+Best VLoss: 0.08036132529377937
+Last 7 Avg VAccuracy: 0.9515555245535714
+Last 7 Avg VLoss: 0.13097782539469854
+Training time: 90.68177545070648
+Samples per second: 2890.819232944984
+
+
+test28/29	32-32 retest
+Score: 0.9246326004030292
+Best VAccuracy: 0.96240234375
+Best VLoss: 0.10426609963178635
+Last 7 Avg VAccuracy: 0.953369140625
+Last 7 Avg VLoss: 0.12594254368117877
+Training time: 79.64937770366669
+Samples per second: 3291.822799728464
+
+
+
+
+
+SERIES 2
+WorkBench
+inp = keras.Input(shape=(64, 16, 1))
+x = layers.Rescaling(1.0/255)(inp)
+x = layers.Conv2D(16, 3, padding='same', activation='relu')(x)
+x = layers.BatchNormalization(axis=3)(x)
+
+for features in [64, 128, 256]:
+	res_last = x
+	x = layers.Conv2D(features, 1, activation='relu')(x)
+	x = layers.Conv2D(features, 3, padding='same', activation='relu')(x)
+	x = layers.Conv2D(features, 3, padding='same', activation='relu')(x)
+	x = layers.MaxPooling2D(pool_size=(2, 2))(x)
+	x = layers.Dropout(0.1)(x)
+	res = layers.Conv2D(features, 1, strides=2, padding="same")(res_last)
+	x = layers.add([x, res])
+
+x = layers.Conv2D(64, 3, padding='same')(x)
+x = layers.BatchNormalization(axis=3)(x)
+x = layers.Activation("relu")(x)
+x = layers.GlobalAveragePooling2D()(x)
+x = layers.Dropout(0.3678)(x)
+outp = layers.Dense(1, activation='sigmoid')(x)
+
+Score: 0.926
+Best VAccuracy: 0.966
+Best VLoss: 0.102
+Last 7 Avg VAccuracy: 0.954
+Last 7 Avg VLoss: 0.125
+Training time: 80.58
+Samples per second: 3253.37
+
+
+test34	Res Kernel Size
+res = layers.Conv2D(features, 2, strides=2, padding="same")(res_last)
+Score: 0.9243994803706865
+Best VAccuracy: 0.967529296875
+Best VLoss: 0.09481114894151688
+Last 7 Avg VAccuracy: 0.9488699776785714
+Last 7 Avg VLoss: 0.13798517787030765
+Training time: 83.43032765388489
+Samples per second: 3142.302017979432
+
+
+
+test36	Remove Downscale Conv
+x = layers.Conv2D(features, 3, padding='same', activation='relu')(x)
+x = layers.Conv2D(features, 3, padding='same', activation='relu')(x)
+x = layers.MaxPooling2D(pool_size=(2, 2))(x)
+x = layers.Dropout(0.1)(x)
+res = layers.Conv2D(features, 1, strides=2, padding="same")(res_last)
+x = layers.add([x, res])
+Score: 0.9288561872979841
+Best VAccuracy: 0.9658203125
+Best VLoss: 0.09654762968420982
+Last 7 Avg VAccuracy: 0.9552525111607143
+Last 7 Avg VLoss: 0.12083132565021515
+Training time: 63.73003566265106
+Samples per second: 4114.036372667671
+
+
+
+test38		Add K3 Conv
+x = layers.Conv2D(features, 1, activation='relu')(x)
+x = layers.Conv2D(features, 3, padding='same', activation='relu')(x)
+x = layers.Conv2D(features, 3, padding='same', activation='relu')(x)
+x = layers.Conv2D(features, 3, padding='same', activation='relu')(x)
+x = layers.MaxPooling2D(pool_size=(2, 2))(x)
+x = layers.Dropout(0.1)(x)
+res = layers.Conv2D(features, 1, strides=2, padding="same")(res_last)
+x = layers.add([x, res])
+Score: 0.924961497250981
+Best VAccuracy: 0.9697265625
+Best VLoss: 0.09672612696886063
+Last 7 Avg VAccuracy: 0.9495326450892857
+Last 7 Avg VLoss: 0.13634151007447926
+Training time: 101.9925764799118
+Samples per second: 2570.4256578204786
+
+
+
+test40		Res Padding to Valid
+x = layers.Conv2D(features, 1, activation='relu')(x)
+x = layers.Conv2D(features, 3, padding='same', activation='relu')(x)
+x = layers.Conv2D(features, 3, padding='same', activation='relu')(x)
+x = layers.MaxPooling2D(pool_size=(2, 2))(x)
+x = layers.Dropout(0.1)(x)
+res = layers.Conv2D(features, 1, strides=2)(res_last)
+x = layers.add([x, res])
+Score: 0.9318449358278829
+Best VAccuracy: 0.97265625
+Best VLoss: 0.08386943116784096
+Last 7 Avg VAccuracy: 0.953369140625
+Last 7 Avg VLoss: 0.12607161115322796
+Training time: 77.85886073112488
+Samples per second: 3367.3868351333404
+
+
+
+test42		Remove K3 Conv
+x = layers.Conv2D(features, 1, activation='relu')(x)
+x = layers.Conv2D(features, 3, padding='same', activation='relu')(x)
+x = layers.MaxPooling2D(pool_size=(2, 2))(x)
+x = layers.Dropout(0.1)(x)
+res = layers.Conv2D(features, 1, strides=2, padding="same")(res_last)
+x = layers.add([x, res])
+Score: 0.9189679861880395
+Best VAccuracy: 0.96826171875
+Best VLoss: 0.09907887130975723
+Last 7 Avg VAccuracy: 0.9423479352678572
+Last 7 Avg VLoss: 0.15207265211003168
+Training time: 52.89831507205963
+Samples per second: 4971.007513009401
+
+
+
+Test44		Double Res Features
+x = layers.Conv2D(features, 1, activation='relu')(x)
+x = layers.Conv2D(features, 3, padding='same', activation='relu')(x)
+x = layers.Conv2D(features, 3, padding='same', activation='relu')(x)
+x = layers.Conv2D(2 * features, 1, activation='relu')(x)
+x = layers.MaxPooling2D(pool_size=(2, 2))(x)
+x = layers.Dropout(0.1)(x)
+res = layers.Conv2D(2 * features, 1, padding='same', strides=2)(res_last)
+x = layers.add([x, res])
+Score: 0.9225890399954783
+Best VAccuracy: 0.9697265625
+Best VLoss: 0.0997471995651722
+Last 7 Avg VAccuracy: 0.9469517299107142
+Last 7 Avg VLoss: 0.14117253199219704
+Training time: 113.51428210735321
+Samples per second: 2309.48941302657
+
+
+
+Test46		Res KSize
+res = layers.Conv2D(features, 3, strides=2, padding="same")(res_last)
+Score: 0.9181256699024017
+Best VAccuracy: 0.965087890625
+Best VLoss: 0.10700790211558342
+Last 7 Avg VAccuracy: 0.94482421875
+Last 7 Avg VLoss: 0.14747789608580725
+Training time: 100.22176158428192
+Samples per second: 2619.9123330336824
+
+
+
+Test48		Add Batch Norm After ADD layer
+res = layers.Conv2D(features, 1, strides=2)(res_last)
+x = layers.add([x, res])
+x = layers.BatchNormalization(axis=3)(x)
+Score: 0.9338306767043215
+Best VAccuracy: 0.970947265625
+Best VLoss: 0.08451076224446297
+Last 7 Avg VAccuracy: 0.9558803013392858
+Last 7 Avg VLoss: 0.11727897024580411
+Training time: 88.37079298496246
+Samples per second: 2966.414190774196
+
+
+
+
+Test50		Add BatchNorm After Res
+res = layers.Conv2D(features, 1, strides=2)(res_last)
+x = layers.BatchNormalization(axis=3)(x)
+x = layers.add([x, res])
+Score: 0.9283141949363265
+Best VAccuracy: 0.96875
+Best VLoss: 0.08448018506169319
+Last 7 Avg VAccuracy: 0.9482421875
+Last 7 Avg VLoss: 0.1323245907468455
+Training time: 100.06114554405212
+Samples per second: 2636.236178241641
+
+
+
+Test54		Add Activation to Res
+res = layers.Conv2D(features, 1, strides=2, activation='relu')(res_last)
+Score: 0.9323419698519032
+Best VAccuracy: 0.9716796875
+Best VLoss: 0.08591420948505402
+Last 7 Avg VAccuracy: 0.9551478794642857
+Last 7 Avg VLoss: 0.12268911195652826
+Training time: 84.30895948410034
+Samples per second: 3125.8199151092103
+
+
+
+Test56		Activation and Batch Norm
+x = layers.Dropout(0.1)(x)
+res = layers.Conv2D(features, 1, padding='same', strides=2, activation='relu')(res_last)
+x = layers.add([x, res])
+x = layers.BatchNormalization(axis=3)(x)
+score: 0.9350161399554543
+Best VAccuracy: 0.9716796875
+Best VLoss: 0.07954214885830879
+Last 7 Avg VAccuracy: 0.9563337053571429
+Last 7 Avg VLoss: 0.11848681739398412
+Training time: 86.49567437171936
+Samples per second: 3031.0790013321844
+
+
+
+
+Test58		replace pooling with downsampling
+x = layers.Conv2D(features, 1, activation='relu')(x)
+x = layers.Conv2D(features, 3, padding='same', activation='relu')(x)
+x = layers.Conv2D(features, 3, padding='same', activation='relu')(x)
+x = layers.Conv2D(features, 2, strides=2, activation='relu')(x)
+x = layers.Dropout(0.1)(x)
+res = layers.Conv2D(features, 1, padding='same', strides=2)(res_last)
+x = layers.add([x, res])
+Score: 0.9093578348269977
+Best VAccuracy: 0.962158203125
+Best VLoss: 0.1200137808918953
+Last 7 Avg VAccuracy: 0.9383370535714286
+Last 7 Avg VLoss: 0.1628548875451088
+Training time: 98.36793625354767
+Samples per second: 2677.955349809896
+
+
+
+Test60		replace pooling with downsampling small k
+x = layers.Conv2D(features, 1, activation='relu')(x)
+x = layers.Conv2D(features, 3, padding='same', activation='relu')(x)
+x = layers.Conv2D(features, 3, padding='same', activation='relu')(x)
+x = layers.Conv2D(features, 1, strides=2, activation='relu')(x)
+x = layers.Dropout(0.1)(x)
+res = layers.Conv2D(features, 1, padding='same', strides=2)(res_last)
+x = layers.add([x, res])
+Score: 0.8999974108680506
+Best VAccuracy: 0.95263671875
+Best VLoss: 0.1353299617767334
+Last 7 Avg VAccuracy: 0.9333147321428572
+Last 7 Avg VLoss: 0.17409526130982805
+Training time: 95.28623604774475
+Samples per second: 2751.463814733532
+
+
+
+
+Test62		Downsampling 4x Feature
+x = layers.Conv2D(features, 1, activation='relu')(x)
+x = layers.Conv2D(features, 3, padding='same', activation='relu')(x)
+x = layers.Conv2D(features, 3, padding='same', activation='relu')(x)
+x = layers.Conv2D(4 * features, 1, strides=2, activation='relu')(x)
+x = layers.Dropout(0.1)(x)
+res = layers.Conv2D(4 * features, 1, padding='same', strides=2)(res_last)
+Score: 0.8884561866133591
+Best VAccuracy: 0.948486328125
+Best VLoss: 0.14319857954978943
+Last 7 Avg VAccuracy: 0.9210379464285714
+Last 7 Avg VLoss: 0.20234783738851547
+Training time: 142.11769437789917
+Samples per second: 1850.015606276927
+
+
+
+
+Test64		Batch After Convs
+x = layers.Conv2D(features, 1, activation='relu')(x)
+x = layers.Conv2D(features, 3, padding='same', activation='relu')(x)
+x = layers.BatchNormalization(axis=3)(x)
+x = layers.Conv2D(features, 3, padding='same', activation='relu')(x)
+x = layers.BatchNormalization(axis=3)(x)
+x = layers.MaxPooling2D(pool_size=(2, 2))(x)
+Score: 0.936118807426601
+Best VAccuracy: 0.97412109375
+Best VLoss: 0.07988060638308525
+Last 7 Avg VAccuracy: 0.9564732142857143
+Last 7 Avg VLoss: 0.1160896553524903
+Training time: 108.12059652805328
+Samples per second: 2424.9300780355575
+
+
+
+
+
+
+
+
+
+
+SERIES 3 Identity Blocks
+Base
+Score: 0.926
+Best VAccuracy: 0.966
+Best VLoss: 0.102
+Last 7 Avg VAccuracy: 0.954
+Last 7 Avg VLoss: 0.125
+Training time: 80.58
+Samples per second: 3253.37
+
+
+
+
+
+Test0	Add 1 ID Block
+res = x
+x = layers.Conv2D(fsize, 3, padding='same', activation='relu')(x)
+x = layers.add([x, res])
+x = layers.BatchNormalization(axis=3)(x)
+Score: 0.9341147739833815
+Best VAccuracy: 0.971435546875
+Best VLoss: 0.08664049580693245
+Last 7 Avg VAccuracy: 0.9575892857142858
+Last 7 Avg VLoss: 0.11629881230848176
+Training time: 105.49065589904785
+Samples per second: 2490.427820245278
+
+
+
+
+
+Test2	Add 2 ID Blocks
+res = x
+x = layers.Conv2D(fsize, 3, padding='same', activation='relu')(x)
+x = layers.add([x, res])
+x = layers.BatchNormalization(axis=3)(x)
+res = x
+x = layers.Conv2D(fsize, 3, padding='same', activation='relu')(x)
+x = layers.add([x, res])
+x = layers.BatchNormalization(axis=3)(x)
+Score: 0.9351809888574905
+Best VAccuracy: 0.9697265625
+Best VLoss: 0.08511069044470787
+Last 7 Avg VAccuracy: 0.9594377790178572
+Last 7 Avg VLoss: 0.11329628420727594
+Training time: 115.05763292312622
+Samples per second: 2278.435312837667
+
+
+
+Test4	2 Block 1 Reduce
+res = x
+x = layers.Conv2D(features, 1, activation='relu')(x)
+x = layers.Conv2D(fsize, 3, padding='same', activation='relu')(x)
+x = layers.add([x, res])
+x = layers.BatchNormalization(axis=3)(x)
+res = x
+x = layers.Conv2D(features, 1, activation='relu')(x)
+x = layers.Conv2D(fsize, 3, padding='same', activation='relu')(x)
+x = layers.add([x, res])
+x = layers.BatchNormalization(axis=3)(x)
+Score: 0.9352667848105634
+Best VAccuracy: 0.971435546875
+Best VLoss: 0.08367504924535751
+Last 7 Avg VAccuracy: 0.9576590401785714
+Last 7 Avg VLoss: 0.11439667642116547
+Training time: 124.89162683486938
+Samples per second: 2100.3865516317483
+
+
+Test6	1ID Block With Reduce Conv
+res = x
+x = layers.Conv2D(features, 1, activation='relu')(x)
+x = layers.Conv2D(fsize, 3, padding='same', activation='relu')(x)
+x = layers.add([x, res])
+x = layers.BatchNormalization(axis=3)(x)
+Score: 0.934281581331369
+Best VAccuracy: 0.972900390625
+Best VLoss: 0.07726059854030609
+Last 7 Avg VAccuracy: 0.9525669642857143
+Last 7 Avg VLoss: 0.12172646128705569
+Training time: 102.86186444759369
+Samples per second: 2548.508910548372
+
+
+
+Test8	Double Reduce 1 Block
+res = x
+x = layers.Conv2D(features, 1, activation='relu')(x)
+x = layers.Conv2D(fsize, 3, padding='same', activation='relu')(x)
+x = layers.Conv2D(features, 1, activation='relu')(x)
+x = layers.add([x, res])
+x = layers.BatchNormalization(axis=3)(x)
+Score: 0.9329212228328123
+Best VAccuracy: 0.972412109375
+Best VLoss: 0.08495843783020973
+Last 7 Avg VAccuracy: 0.955810546875
+Last 7 Avg VLoss: 0.12349784214581763
+Training time: 103.35207390785217
+Samples per second: 2537.396845525061
+
+
+
+
+DETECTION
+
+No ID 6464i 128o 3l64 0ID
+Score: 0.8873297036910719
+Best VAccuracy: 0.96484375
+Best VLoss: 0.08915790170431137
+Last 7 Avg VAccuracy: 0.896856393132891
+Last 7 Avg VLoss: 0.2748642670256751
+Training time: 130.23994421958923
+Samples per second: 2012.8721286836019
+
+No ID 6464i 128o 4ml32s
+Score: 0.7205307465655797
+Best VAccuracy: 0.8743489682674408
+Best VLoss: 0.329195499420166
+Last 7 Avg VAccuracy: 0.7686011961528234
+Last 7 Avg VLoss: 0.7396907018763679
+Training time: 98.3641744852066
+Samples per second: 2668.0118065490906
+
+No ID 6464i 128o 3ml32s
+Score: 0.7788615127030165
+Best VAccuracy: 0.9264323115348816
+Best VLoss: 0.1900942549109459
+Last 7 Avg VAccuracy: 0.7824590802192688
+Last 7 Avg VLoss: 0.5961464324167796
+Training time: 90.65909993648529
+Samples per second: 2893.0156840447494
+
+No ID 64i 128o 3ml32s
+core: 0.8119847809013918
+Best VAccuracy: 0.9270833432674408
+Best VLoss: 0.19382552057504654
+Last 7 Avg VAccuracy: 0.8351934552192688
+Last 7 Avg VLoss: 0.4447844422289303
+Training time: 68.38163876533508
+Samples per second: 3851.46266352566
+
+No ID 3232i 128o 3ml32s
+Score: 0.8158355404867417
+Best VAccuracy: 0.9322916567325592
+Best VLoss: 0.18278474360704422
+Last 7 Avg VAccuracy: 0.8352864597524916
+Last 7 Avg VLoss: 0.43228163995913094
+Training time: 78.03995299339294
+Samples per second: 3369.2923075860363
+
+No ID 32i 128o 3ml64 0ID
+2x
+Score: 0.9306448094523251
+Best VAccuracy: 0.9752604365348816
+Best VLoss: 0.07147794961929321
+Last 7 Avg VAccuracy: 0.9494047675813947
+Last 7 Avg VLoss: 0.14393620512315206
+Training time: 221.62375354766846
+Samples per second: 2365.666999170431
+
+1ID ID 32i 128o 3ml32s
+2x
+Score: 0.9264238821329152
+Best VAccuracy: 0.9765625
+Best VLoss: 0.0726655051112175
+Last 7 Avg VAccuracy: 0.9425223214285714
+Last 7 Avg VLoss: 0.15607947962624685
+Training time: 164.954341173172
+Samples per second: 3178.382552839838
+
+
+0ID 32i 64o 3ml32s
+2x
+Score: 0.928790284481266
+Best VAccuracy: 0.9713541865348816
+Best VLoss: 0.08373990654945374
+Last 7 Avg VAccuracy: 0.94921875
+Last 7 Avg VLoss: 0.13477118845496858
+Training time: 122.32709336280823
+Samples per second: 4285.951587560587
+
+
+1id ID 32i 128o 3ml32s 
+2x
+Score: 0.9382218501706164
+Best VAccuracy: 0.98046875
+Best VLoss: 0.06870087236166
+Last 7 Avg VAccuracy: 0.9551711337906974
+Last 7 Avg VLoss: 0.12429329433611461
+Training time: 153.98797750473022
+Samples per second: 3404.7333337038917
+4x
+Score: 0.9402696530041088
+Best VAccuracy: 0.9752604365348816
+Best VLoss: 0.07158442586660385
+Last 7 Avg VAccuracy: 0.9618675708770752
+Last 7 Avg VLoss: 0.11344174721411296
+Training time: 234.23287868499756
+Samples per second: 2238.3194150342833
+
+
+
+0ID 32i 128o 3ml32s
+Score: 0.8261816465165353
+Best VAccuracy: 0.9140625
+Best VLoss: 0.19984042644500732
+Last 7 Avg VAccuracy: 0.8631882454667772
+Last 7 Avg VLoss: 0.3528218727026667
+Training time: 64.86063933372498
+Samples per second: 4042.074889630544
+2x
+Score: 0.9320943153017401
+Best VAccuracy: 0.9791666865348816
+Best VLoss: 0.06877080351114273
+Last 7 Avg VAccuracy: 0.9475446513720921
+Last 7 Avg VLoss: 0.14217316465718405
+Training time: 110.83465933799744
+Samples per second: 4730.361451296115
+4x
+Score: 0.9492359838775367
+Best VAccuracy: 0.9798176884651184
+Best VLoss: 0.06382381170988083
+Last 7 Avg VAccuracy: 0.9678199291229248
+Last 7 Avg VLoss: 0.09337484943015235
+Training time: 219.47162914276123
+Samples per second: 2388.864574650616
