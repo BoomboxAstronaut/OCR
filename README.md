@@ -1,6 +1,8 @@
 # OCR
 Optical Character Recognition
 
+
+Extract text from images as strings
 See Demo.ipnyb for details
 
 
