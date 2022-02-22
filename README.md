@@ -8,4 +8,5 @@ See Demo.ipnyb for details
 
 
 Take a screenshot (⊞ + shift + s on windows)
-Run script
+
+Run reader.py script
